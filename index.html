@@ -401,44 +401,43 @@ console.log('Firebase Firestore iniciado:', db);
         }
 
         // Registra aposta no Firestore e atualiza tabela
-        function registerBet() {
-            const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (!name || !phone || isNaN(amount) || amount < 2) {
-                alert('Preencha todos os campos corretamente (valor mínimo R$2).');
-                return;
-            }
-            const payout = (amount * selectedDate.multiplier).toFixed(2);
+function registerBet() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value);
+    if (!name || !phone || isNaN(amount) || amount < 2) {
+        alert('Preencha todos os campos corretamente (valor mínimo R$2).');
+        return;
+    }
+    const payout = (amount * selectedDate.multiplier).toFixed(2);
 
-            db.collection('apostas').add({
-                name: name,
-                phone: phone,
-                day: selectedDate.day,
-                month: selectedDate.month,
-                amount: amount,
-                payout: parseFloat(payout),
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                // Atualiza a tabela com nova aposta
-                const row = `<tr>
-                    <td>${name}</td>
-                    <td>${phone}</td>
-                    <td>${selectedDate.day}</td>
-                    <td>${selectedDate.month}</td>
-                    <td>R$ ${amount.toFixed(2)}</td>
-                    <td>R$ ${payout}</td>
-                </tr>`;
-                document.querySelector('#bets-table tbody').innerHTML += row;
-                closeModal();
-                alert('Aposta registrada com sucesso!');
-            })
-            .catch((error) => {
-                console.error('Erro ao salvar aposta:', error);
-                alert('Erro ao registrar aposta. Tente novamente.');
-            });
-        }
+    db.collection('apostas').add({
+        name: name,
+        phone: phone,
+        day: selectedDate.day,
+        month: selectedDate.month,
+        amount: amount,
+        payout: parseFloat(payout),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        const row = `<tr>
+            <td>${name}</td>
+            <td>${phone}</td>
+            <td>${selectedDate.day}</td>
+            <td>${selectedDate.month}</td>
+            <td>R$ ${amount.toFixed(2)}</td>
+            <td>R$ ${payout}</td>
+        </tr>`;
+        document.querySelector('#bets-table tbody').innerHTML += row;
+        closeModal();
+        alert('Aposta registrada com sucesso!');
+    })
+    .catch((error) => {
+        console.error('Erro ao salvar aposta:', error);
+        alert('Erro ao registrar aposta. Tente novamente.');
+    });
+}
     </script>
 
 </body>
