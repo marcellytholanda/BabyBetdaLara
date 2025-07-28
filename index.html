@@ -212,9 +212,6 @@
             background-color: #e65597;
         }
     </style>
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <div id="header">
@@ -325,121 +322,151 @@
         </div>
     </div>
 
-    <div class="sidebar">
-        <h2>Apostas Confirmadas</h2>
-        <table id="bets-table">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Telefone</th>
-                    <th>Dia</th>
-                    <th>Mês</th>
-                    <th>Valor</th>
-                    <th>A Receber</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div id="pix-qr">
-            <h3>Faça o Pix para confirmar:</h3>
-            <img src="images/qrcodemarcelly.jpeg" alt="QR Code Pix" />
-            <p>Chave Pix: <strong>marcellyt.holanda@hotmail.com</strong></p>
-        </div>
+<div class="sidebar">
+    <h2>Apostas Confirmadas</h2>
+    <table id="bets-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Dia</th>
+                <th>Mês</th>
+                <th>Valor</th>
+                <th>A Receber</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div id="pix-qr">
+        <h3>Faça o Pix para confirmar:</h3>
+        <img src="images/qrcodemarcelly.jpeg" alt="QR Code Pix" />
+        <p>Chave Pix: <strong>marcellyt.holanda@hotmail.com</strong></p>
     </div>
+</div>
 
-    <div id="modal">
-        <div id="modal-content">
-            <h3>Apostar em <span id="selected-day"></span></h3>
-            <input type="text" id="name" placeholder="Nome" />
-            <input type="text" id="phone" placeholder="Telefone" />
-            <input type="number" id="amount" placeholder="Valor (mín. R$2)" min="2" />
-            <br />
-            <button onclick="registerBet()">Confirmar</button>
-            <br /><br />
-            <button onclick="closeModal()">Cancelar</button>
-        </div>
+<div id="modal">
+    <div id="modal-content">
+        <h3>Apostar em <span id="selected-day"></span></h3>
+        <input type="text" id="name" placeholder="Nome" />
+        <input type="text" id="phone" placeholder="Telefone" />
+        <input type="number" id="amount" placeholder="Valor (mín. R$2)" min="2" />
+        <br />
+        <button onclick="registerBet()">Confirmar</button>
+        <br /><br />
+        <button onclick="closeModal()">Cancelar</button>
     </div>
+</div>
 
-    <script>
-        // Firebase config e inicialização
-        const firebaseConfig = {
-            apiKey: "AIzaSyA92b0klkn2MxVLEW9nBPw5RlTxUycX4D8",
-            authDomain: "babybetdalara.firebaseapp.com",
-            projectId: "babybetdalara",
-            storageBucket: "babybetdalara.appspot.com",
-            messagingSenderId: "707783903571",
-            appId: "1:707783903571:web:e0fbb110e00f5ab3eb39a6",
-            measurementId: "G-7TJS53WCXS"
-        };
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-        firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-console.log('Firebase Firestore iniciado:', db);
+<script>
+    // Sua configuração Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyA92b0klkn2MxVLEW9nBPw5RlTxUycX4D8",
+        authDomain: "babybetdalara.firebaseapp.com",
+        projectId: "babybetdalara",
+        storageBucket: "babybetdalara.firebasestorage.app",
+        messagingSenderId: "707783903571",
+        appId: "1:707783903571:web:e0fbb110e00f5ab3eb39a6",
+        measurementId: "G-7TJS53WCXS"
+    };
 
-        // Variável para armazenar a data selecionada
-        let selectedDate = {};
+    // Inicializa Firebase
+    firebase.initializeApp(firebaseConfig);
 
-        // Abre modal ao clicar no dia
-        document.querySelectorAll('.day').forEach((day) => {
-            day.addEventListener('click', () => {
-                const dayNum = day.getAttribute('data-day');
-                const month = day.closest('.month').querySelector('h2').innerText;
-                const multiplierText = day.querySelector('.multiplier')?.innerText || '1.0x';
-                const multiplier = parseFloat(multiplierText.replace('x', ''));
-                selectedDate = { day: dayNum, month, multiplier };
-                document.getElementById('selected-day').innerText = `${dayNum} de ${month}`;
-                document.getElementById('modal').style.display = 'flex';
-            });
+    // Inicializa Firestore
+    const db = firebase.firestore();
+
+    let selectedDate = {};
+
+    document.querySelectorAll('.day').forEach((day) => {
+        day.addEventListener('click', () => {
+            const dayNum = day.getAttribute('data-day');
+            const month = day.closest('.month').querySelector('h2').innerText;
+            const multiplierText = day.querySelector('.multiplier')?.innerText || '1.0x';
+            const multiplier = parseFloat(multiplierText.replace('x', ''));
+            selectedDate = { day: dayNum, month, multiplier };
+            document.getElementById('selected-day').innerText = `${dayNum} de ${month}`;
+            document.getElementById('modal').style.display = 'flex';
         });
+    });
 
-        // Fecha modal e limpa inputs
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('name').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('amount').value = '';
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('name').value = '';
+        document.getElementById('phone').value = '';
+        document.getElementById('amount').value = '';
+    }
+
+    function registerBet() {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const amount = parseFloat(document.getElementById('amount').value);
+
+        if (!name || !phone || isNaN(amount) || amount < 2) {
+            alert('Preencha todos os campos corretamente (valor mínimo R$2).');
+            return;
         }
 
-        // Registra aposta no Firestore e atualiza tabela
-function registerBet() {
-    const name = document.getElementById('name').value.trim();
-    const phone = document.getElementById('phone').value.trim();
-    const amount = parseFloat(document.getElementById('amount').value);
-    if (!name || !phone || isNaN(amount) || amount < 2) {
-        alert('Preencha todos os campos corretamente (valor mínimo R$2).');
-        return;
+        const payout = (amount * selectedDate.multiplier).toFixed(2);
+
+        const betData = {
+            name,
+            phone,
+            day: selectedDate.day,
+            month: selectedDate.month,
+            amount,
+            payout: parseFloat(payout),
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        // Salvar no Firestore
+        db.collection('bets').add(betData)
+            .then((docRef) => {
+                // Atualizar a tabela local
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${name}</td>
+                    <td>${phone}</td>
+                    <td>${selectedDate.day}</td>
+                    <td>${selectedDate.month}</td>
+                    <td>R$ ${amount.toFixed(2)}</td>
+                    <td>R$ ${payout}</td>
+                `;
+                document.querySelector('#bets-table tbody').appendChild(row);
+
+                closeModal();
+                alert('Aposta registrada com sucesso!');
+            })
+            .catch((error) => {
+                console.error("Erro ao salvar a aposta: ", error);
+                alert('Erro ao salvar a aposta. Tente novamente.');
+            });
     }
-    const payout = (amount * selectedDate.multiplier).toFixed(2);
 
-    db.collection('apostas').add({
-        name: name,
-        phone: phone,
-        day: selectedDate.day,
-        month: selectedDate.month,
-        amount: amount,
-        payout: parseFloat(payout),
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        const row = `<tr>
-            <td>${name}</td>
-            <td>${phone}</td>
-            <td>${selectedDate.day}</td>
-            <td>${selectedDate.month}</td>
-            <td>R$ ${amount.toFixed(2)}</td>
-            <td>R$ ${payout}</td>
-        </tr>`;
-        document.querySelector('#bets-table tbody').innerHTML += row;
-        closeModal();
-        alert('Aposta registrada com sucesso!');
-    })
-    .catch((error) => {
-        console.error('Erro ao salvar aposta:', error);
-        alert('Erro ao registrar aposta. Tente novamente.');
-    });
-}
-    </script>
-
+    // Carregar apostas salvas ao abrir a página
+    window.onload = function() {
+        db.collection('bets').orderBy('timestamp', 'desc').get()
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    const bet = doc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${bet.name}</td>
+                        <td>${bet.phone}</td>
+                        <td>${bet.day}</td>
+                        <td>${bet.month}</td>
+                        <td>R$ ${bet.amount.toFixed(2)}</td>
+                        <td>R$ ${bet.payout.toFixed(2)}</td>
+                    `;
+                    document.querySelector('#bets-table tbody').appendChild(row);
+                });
+            })
+            .catch(error => console.error("Erro ao carregar apostas:", error));
+    };
+</script>
 </body>
 </html>
 
