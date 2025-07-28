@@ -162,7 +162,21 @@
             border-radius: 8px;
             box-shadow: 0 0 8px rgba(255, 102, 170, 0.4);
         }
+#bets-table {
+    max-height: 300px;
+    overflow-y: auto;
+    display: block;
+    border: 1px solid #FF99CC;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(255, 102, 170, 0.2);
+}
 
+#bets-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #FFE4F0;
+    z-index: 1;
+}
         #modal {
             position: fixed;
             top: 0;
