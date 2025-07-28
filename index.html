@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Baby Bet da Lara</title>
+
+    <!-- Google Fonts cursivas -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Pacifico&display=swap" rel="stylesheet" />
+
+    <style>
+        /* Header */
+        #header {
+            width: 100%;
+            text-align: center;
+            padding: 30px 20px 10px 20px;
+            color: #aa5599; /* roxo rosado suave */
+        }
+
+        #header h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3em;
+            margin: 0;
+        }
+
+        #header p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            margin: 5px 0 0 0;
+            color: #cc77bb; /* tom rosa/lilás */
+            font-weight: 500;
+        }
+
+        /* Título dos meses destacado */
+        .month h2 {
+            font-family: 'Pacifico', cursive;
+            font-size: 2em;
+            color: #bb5599; /* rosa/lilás mais forte */
+            text-shadow: 1px 1px 3px rgba(187, 85, 153, 0.5);
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ff99cc;
+            padding-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Corpo geral e cores bebê menina */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            background-color: #FFF0F5; /* fundo lavanda suave */
+            color: #663366; /* texto roxo suave */
+        }
+
+        .calendar {
+            flex: 2;
+            padding: 20px;
+            min-width: 300px;
+            background-color: #FFDDEE; /* rosa claro */
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255, 102, 170, 0.3);
+        }
+
+        .month {
+            margin-bottom: 40px;
+        }
+
+        .weekdays,
+        .days {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .weekday,
+        .day {
+            width: calc(100% / 7);
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            font-weight: 600;
+        }
+
+        .weekday {
+            color: #AA5588; /* roxo rosado */
+        }
+
+        .day {
+            cursor: pointer;
+            border: 1px solid #FF99CC; /* borda rosa suave */
+            margin-bottom: 5px;
+            background-color: #FFE4F0; /* rosa muito claro */
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .day:hover {
+            background-color: #FFCCE5; /* rosa médio suave */
+        }
+
+        .multiplier {
+            font-size: 0.8em;
+            color: #AA5588; /* roxo rosado */
+        }
+
+        .empty {
+            visibility: hidden;
+        }
+
+        .sidebar {
+            flex: 1;
+            background: #FFF5F8; /* rosado quase branco */
+            padding: 20px;
+            border-left: 2px solid #FF99CC;
+            min-width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(255, 102, 170, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            color: #663366;
+        }
+
+        th,
+        td {
+            border: 1px solid #FF99CC;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #FFE4F0;
+        }
+
+        #pix-qr {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #pix-qr img {
+            max-width: 150px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(255, 102, 170, 0.4);
+        }
+
+        #modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 182, 193, 0.8); /* rosa claro translúcido */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #modal-content {
+            background: #fff0f5; /* lavanda suave */
+            padding: 20px;
+            border-radius: 12px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255, 102, 170, 0.5);
+            color: #663366;
+        }
+
+        #modal input {
+            width: 90%;
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #FF99CC;
+            border-radius: 6px;
+            font-size: 1em;
+            color: #663366;
+        }
+
+        #modal button {
+            background-color: #FF66AA;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 6px 4px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #modal button:hover {
+            background-color: #e65597;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>Baby Bet da Lara</h1>
+        <p>🌸 Dê seu palpite de quando nascerá nosso pacotinho de amor 🌸</p>
+    </div>
+    <div class="calendar" id="calendar-container">
+        <!-- (todo seu calendário com os meses/dias aqui, igual você já tinha) -->
+        <div class="month">
+            <h2>Agosto</h2>
+            <div class="weekdays">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Seg</div>
+                <div class="weekday">Ter</div>
+                <div class="weekday">Qua</div>
+                <div class="weekday">Qui</div>
+                <div class="weekday">Sex</div>
+                <div class="weekday">Sáb</div>
+            </div>
+            <div class="days">
+                <!-- dias do mês com data e multiplicador -->
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day" data-day="1" data-multiplier="3.50">1<br /><span class="multiplier">3.50x</span></div>
+                <div class="day" data-day="2" data-multiplier="3.35">2<br /><span class="multiplier">3.35x</span></div>
+                <div class="day" data-day="3" data-multiplier="3.25">3<br /><span class="multiplier">3.25x</span></div>
+                <div class="day" data-day="4" data-multiplier="3.20">4<br /><span class="multiplier">3.20x</span></div>
+                <div class="day" data-day="5" data-multiplier="3.10">5<br /><span class="multiplier">3.10x</span></div>
+                <div class="day" data-day="6" data-multiplier="3.05">6<br /><span class="multiplier">3.05x</span></div>
+                <div class="day" data-day="7" data-multiplier="2.95">7<br /><span class="multiplier">2.95x</span></div>
+                <div class="day" data-day="8" data-multiplier="2.90">8<br /><span class="multiplier">2.90x</span></div>
+                <div class="day" data-day="9" data-multiplier="2.75">9<br /><span class="multiplier">2.75x</span></div>
+                <div class="day" data-day="10" data-multiplier="2.60">10<br /><span class="multiplier">2.60x</span></div>
+                <div class="day" data-day="11" data-multiplier="2.35">11<br /><span class="multiplier">2.35x</span></div>
+                <div class="day" data-day="12" data-multiplier="2.30">12<br /><span class="multiplier">2.30x</span></div>
+                <div class="day" data-day="13" data-multiplier="2.25">13<br /><span class="multiplier">2.25x</span></div>
+                <div class="day" data-day="14" data-multiplier="2.20">14<br /><span class="multiplier">2.20x</span></div>
+                <div class="day" data-day="15" data-multiplier="2.15">15<br /><span class="multiplier">2.15x</span></div>
+                <div class="day" data-day="16" data-multiplier="2.10">16<br /><span class="multiplier">2.10x</span></div>
+                <div class="day" data-day="17" data-multiplier="2.05">17<br /><span class="multiplier">2.05x</span></div>
+                <div class="day" data-day="18" data-multiplier="2.00">18<br /><span class="multiplier">2.00x</span></div>
+                <div class="day" data-day="19" data-multiplier="1.90">19<br /><span class="multiplier">1.90x</span></div>
+                <div class="day" data-day="20" data-multiplier="1.80">20<br /><span class="multiplier">1.80x</span></div>
+                <div class="day" data-day="21" data-multiplier="1.70">21<br /><span class="multiplier">1.70x</span></div>
+                <div class="day" data-day="22" data-multiplier="1.65">22<br /><span class="multiplier">1.65x</span></div>
+                <div class="day" data-day="23" data-multiplier="1.60">23<br /><span class="multiplier">1.60x</span></div>
+                <div class="day" data-day="24" data-multiplier="1.60">24<br /><span class="multiplier">1.60x</span></div>
+                <div class="day" data-day="25" data-multiplier="1.55">25<br /><span class="multiplier">1.55x</span></div>
+                <div class="day" data-day="26" data-multiplier="1.55">26<br /><span class="multiplier">1.55x</span></div>
+                <div class="day" data-day="27" data-multiplier="1.50">27<br /><span class="multiplier">1.50x</span></div>
+                <div class="day" data-day="28" data-multiplier="1.45">28<br /><span class="multiplier">1.45x</span></div>
+                <div class="day" data-day="29" data-multiplier="1.30">29<br /><span class="multiplier">1.30x</span></div>
+                <div class="day" data-day="30" data-multiplier="1.30">30<br /><span class="multiplier">1.30x</span></div>
+                <div class="day" data-day="31" data-multiplier="1.30">31<br /><span class="multiplier">1.30x</span></div>
+            </div>
+        </div>
+
+        <div class="month">
+            <h2>Setembro</h2>
+            <div class="weekdays">
+                <div class="weekday">Dom</div>
+                <div class="weekday">Seg</div>
+                <div class="weekday">Ter</div>
+                <div class="weekday">Qua</div>
+                <div class="weekday">Qui</div>
+                <div class="weekday">Sex</div>
+                <div class="weekday">Sáb</div>
+            </div>
+            <div class="days">
+                <div class="day empty"></div>
+                <div class="day" data-day="1" data-multiplier="1.25">1<br /><span class="multiplier">1.25x</span></div>
+                <div class="day" data-day="2" data-multiplier="1.25">2<br /><span class="multiplier">1.25x</span></div>
+                <div class="day" data-day="3" data-multiplier="1.25">3<br /><span class="multiplier">1.25x</span></div>
+                <div class="day" data-day="4" data-multiplier="1.25">4<br /><span class="multiplier">1.25x</span></div>
+                <div class="day" data-day="5" data-multiplier="1.20">5<br /><span class="multiplier">1.20x</span></div>
+                <div class="day" data-day="6" data-multiplier="1.20">6<br /><span class="multiplier">1.20x</span></div>
+                <div class="day" data-day="7" data-multiplier="1.20">7<br /><span class="multiplier">1.20x</span></div>
+                <div class="day" data-day="8" data-multiplier="1.15">8<br /><span class="multiplier">1.15x</span></div>
+                <div class="day" data-day="9" data-multiplier="1.15">9<br /><span class="multiplier">1.15x</span></div>
+                <div class="day" data-day="10" data-multiplier="1.10">10<br /><span class="multiplier">1.10x</span></div>
+                <div class="day" data-day="11" data-multiplier="1.10">11<br /><span class="multiplier">1.10x</span></div>
+                <div class="day" data-day="12" data-multiplier="1.10">12<br /><span class="multiplier">1.10x</span></div>
+                <div class="day" data-day="13" data-multiplier="1.90">13<br /><span class="multiplier">1.90x</span></div>
+                <div class="day" data-day="14" data-multiplier="2.50">14<br /><span class="multiplier">2.50x</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <h2>Apostas Confirmadas</h2>
+        <table id="bets-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Dia</th>
+                    <th>Mês</th>
+                    <th>Valor</th>
+                    <th>A Receber</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="pix-qr">
+            <h3>Faça o Pix para confirmar:</h3>
+            <img src="images/qrcodemarcelly.jpeg" alt="QR Code Pix" />
+            <p>Chave Pix: <strong>marcellyt.holanda@hotmail.com</strong></p>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div id="modal-content">
+            <h3>Apostar em <span id="selected-day"></span></h3>
+            <input type="text" id="name" placeholder="Nome" />
+            <input type="text" id="phone" placeholder="Telefone" />
+            <input type="number" id="amount" placeholder="Valor (mín. R$2)" min="2" />
+            <br />
+            <button onclick="registerBet()">Confirmar</button>
+            <br /><br />
+            <button onclick="closeModal()">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedDate = {};
+
+        document.querySelectorAll('.day').forEach((day) => {
+            day.addEventListener('click', () => {
+                const dayNum = day.getAttribute('data-day');
+                const month = day.closest('.month').querySelector('h2').innerText;
+                const multiplierText = day.querySelector('.multiplier')?.innerText || '1.0x';
+                const multiplier = parseFloat(multiplierText.replace('x', ''));
+                selectedDate = { day: dayNum, month, multiplier };
+                document.getElementById('selected-day').innerText = `${dayNum} de ${month}`;
+                document.getElementById('modal').style.display = 'flex';
+            });
+        });
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('name').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('amount').value = '';
+        }
+
+        function registerBet() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            if (!name || !phone || isNaN(amount) || amount < 2) {
+                alert('Preencha todos os campos corretamente (valor mínimo R$2).');
+                return;
+            }
+            const payout = (amount * selectedDate.multiplier).toFixed(2);
+            const row = `<tr>
+                <td>${name}</td>
+                <td>${phone}</td>
+                <td>${selectedDate.day}</td>
+                <td>${selectedDate.month}</td>
+                <td>R$ ${amount.toFixed(2)}</td>
+                <td>R$ ${payout}</td>
+            </tr>`;
+            document.querySelector('#bets-table tbody').innerHTML += row;
+            closeModal();
+        }
+    </script>
+</body>
+</html>
